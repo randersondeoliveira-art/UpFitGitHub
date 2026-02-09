@@ -1,0 +1,251 @@
+import { Student, Plan, Transaction, KPI, StudentStatus } from '../types';
+import { INITIAL_PLANS } from '../constants';
+
+const KEYS = {
+  STUDENTS: 'gym_students',
+  TRANSACTIONS: 'gym_transactions',
+  PLANS: 'gym_plans',
+  SESSION: 'gym_session_auth',
+};
+
+// --- AUTHENTICATION (FAKE) ---
+export const login = (): void => {
+  localStorage.setItem(KEYS.SESSION, 'true');
+};
+
+export const logout = (): void => {
+  localStorage.removeItem(KEYS.SESSION);
+};
+
+export const isAuthenticated = (): boolean => {
+  return localStorage.getItem(KEYS.SESSION) === 'true';
+};
+
+// Helper to simulate network delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper for safe ID generation (works in non-secure contexts)
+export const generateUUID = (): string => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
+
+// --- PLANS ---
+export const getPlans = (): Plan[] => {
+  const stored = localStorage.getItem(KEYS.PLANS);
+  if (!stored) {
+    // Clone INITIAL_PLANS to avoid mutating the constant reference
+    const initial = [...INITIAL_PLANS];
+    localStorage.setItem(KEYS.PLANS, JSON.stringify(initial));
+    return initial;
+  }
+  return JSON.parse(stored);
+};
+
+export const savePlan = async (plan: Plan): Promise<void> => {
+  // await delay(200);
+  const plans = getPlans();
+  const existingIndex = plans.findIndex(p => p.id === plan.id);
+  
+  // Create a new array to ensure React triggers updates if we were returning this state directly (though here we just save to LS)
+  const newPlans = [...plans];
+
+  if (existingIndex >= 0) {
+    newPlans[existingIndex] = plan;
+  } else {
+    newPlans.push(plan);
+  }
+  
+  localStorage.setItem(KEYS.PLANS, JSON.stringify(newPlans));
+};
+
+export const deletePlan = async (id: string): Promise<void> => {
+  // await delay(200);
+  const plans = getPlans();
+  const newPlans = plans.filter(p => p.id !== id);
+  localStorage.setItem(KEYS.PLANS, JSON.stringify(newPlans));
+};
+
+// --- STUDENTS ---
+export const getStudents = (): Student[] => {
+  const stored = localStorage.getItem(KEYS.STUDENTS);
+  return stored ? JSON.parse(stored) : [];
+};
+
+export const saveStudent = async (studentData: Omit<Student, 'id' | 'enrollmentDate' | 'nextDueDate' | 'status'> & { paymentMethod: string; paymentDate: string }): Promise<void> => {
+  // await delay(500); // Simulate server time
+  
+  const students = getStudents();
+  const plans = getPlans();
+  const selectedPlan = plans.find(p => p.id === studentData.planId);
+
+  if (!selectedPlan) throw new Error("Plano inválido");
+
+  // Use provided paymentDate or default to today if missing (though type says string)
+  const enrollmentDate = studentData.paymentDate; 
+  
+  // Calculate next due date based on Payment Date
+  const payDateObj = new Date(enrollmentDate);
+  // Add duration
+  const nextDueObj = new Date(payDateObj);
+  nextDueObj.setDate(nextDueObj.getDate() + selectedPlan.durationDays);
+  
+  const nextDueDate = nextDueObj.toISOString().split('T')[0];
+
+  // Extract paymentMethod and paymentDate to avoid saving extraneous fields in Student object if not needed,
+  // but we use enrollmentDate as the start date.
+  const { paymentMethod, paymentDate, ...studentFields } = studentData;
+
+  const newStudent: Student = {
+    id: generateUUID(),
+    ...studentFields,
+    enrollmentDate,
+    nextDueDate,
+    status: 'Active'
+  };
+
+  students.push(newStudent);
+  localStorage.setItem(KEYS.STUDENTS, JSON.stringify(students));
+
+  // --- AUTOMATION: Add Revenue ---
+  const description = `Matrícula: ${newStudent.name} (${selectedPlan.name})`;
+  await addTransaction({
+    date: enrollmentDate, // Transaction date matches the manually selected payment date
+    type: 'Receita',
+    category: 'Mensalidade',
+    value: selectedPlan.value,
+    description,
+    studentId: newStudent.id,
+    paymentMethod: paymentMethod
+  });
+};
+
+export const renewStudent = async (studentId: string, paymentDate: string, paymentMethod: string): Promise<void> => {
+  const students = getStudents();
+  const index = students.findIndex(s => s.id === studentId);
+  
+  if (index === -1) throw new Error("Aluno não encontrado");
+
+  const student = students[index];
+  const plans = getPlans();
+  const plan = plans.find(p => p.id === student.planId);
+
+  if (!plan) throw new Error("Plano do aluno não encontrado");
+
+  // Calculate new due date based on Payment Date + Plan Duration
+  const payDateObj = new Date(paymentDate);
+  // Add duration
+  const newDueDateObj = new Date(payDateObj);
+  newDueDateObj.setDate(newDueDateObj.getDate() + plan.durationDays);
+
+  // Update Student
+  students[index].status = 'Active';
+  students[index].nextDueDate = newDueDateObj.toISOString().split('T')[0];
+  
+  localStorage.setItem(KEYS.STUDENTS, JSON.stringify(students));
+
+  // Create Transaction
+  const description = `Renovação: ${student.name} (${plan.name})`;
+  await addTransaction({
+    date: paymentDate,
+    type: 'Receita',
+    category: 'Renovação',
+    value: plan.value,
+    description,
+    studentId: student.id,
+    paymentMethod: paymentMethod
+  });
+};
+
+export const toggleStudentStatus = async (studentId: string, newStatus: StudentStatus): Promise<void> => {
+  const students = getStudents();
+  const index = students.findIndex(s => s.id === studentId);
+  if (index >= 0) {
+    students[index].status = newStatus;
+    localStorage.setItem(KEYS.STUDENTS, JSON.stringify(students));
+  }
+};
+
+// --- FINANCE ---
+export const getTransactions = (): Transaction[] => {
+  const stored = localStorage.getItem(KEYS.TRANSACTIONS);
+  return stored ? JSON.parse(stored) : [];
+};
+
+export const addTransaction = async (txData: Omit<Transaction, 'id'>): Promise<void> => {
+  // await delay(300);
+  const transactions = getTransactions();
+  const newTx: Transaction = {
+    id: generateUUID(),
+    ...txData
+  };
+  transactions.push(newTx);
+  localStorage.setItem(KEYS.TRANSACTIONS, JSON.stringify(transactions));
+};
+
+export const deleteTransaction = async (id: string): Promise<void> => {
+  const transactions = getTransactions();
+  const newTransactions = transactions.filter(t => t.id !== id);
+  localStorage.setItem(KEYS.TRANSACTIONS, JSON.stringify(newTransactions));
+};
+
+// --- DASHBOARD DATA ---
+export const getDashboardData = async (): Promise<{ kpi: KPI, dueStudents: Student[], recentTransactions: Transaction[] }> => {
+  // await delay(400);
+  
+  const students = getStudents();
+  const transactions = getTransactions();
+  
+  const todayDate = new Date();
+  const today = todayDate.toISOString().split('T')[0];
+  
+  // Calculate 3 days from now for "Upcoming" radar
+  const upcomingDate = new Date(todayDate);
+  upcomingDate.setDate(upcomingDate.getDate() + 3);
+  const upcomingLimit = upcomingDate.toISOString().split('T')[0];
+
+  // KPI 1: Total Active Students
+  const activeStudents = students.filter(s => s.status === 'Active').length;
+
+  // KPI 2: Receivable Today (Students whose due date is today AND are active)
+  const receivableTodayCount = students.filter(s => s.nextDueDate === today && s.status === 'Active').length;
+  
+  const plans = getPlans();
+  const potentialValue = students
+    .filter(s => s.nextDueDate === today && s.status === 'Active')
+    .reduce((acc, s) => {
+      const p = plans.find(plan => plan.id === s.planId);
+      return acc + (p ? p.value : 0);
+    }, 0);
+
+  // KPI 3: Monthly Balance
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  
+  const monthlyTx = transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+
+  const revenue = monthlyTx.filter(t => t.type === 'Receita').reduce((sum, t) => sum + t.value, 0);
+  const expenses = monthlyTx.filter(t => t.type === 'Despesa').reduce((sum, t) => sum + t.value, 0);
+  const monthlyBalance = revenue - expenses;
+
+  // Radar: Includes Overdue (date <= today) AND Upcoming (date <= today + 3 days)
+  // Logic: nextDueDate <= upcomingLimit
+  const dueStudents = students
+    .filter(s => s.nextDueDate <= upcomingLimit && s.status === 'Active')
+    .sort((a, b) => a.nextDueDate.localeCompare(b.nextDueDate));
+
+  return {
+    kpi: {
+      activeStudents,
+      receivableToday: potentialValue,
+      monthlyBalance
+    },
+    dueStudents,
+    recentTransactions: transactions.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5)
+  };
+};
