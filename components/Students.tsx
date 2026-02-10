@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getStudents, getPlans, toggleStudentStatus, renewStudent } from '../services/api';
+import { getStudents, getPlans, toggleStudentStatus, renewStudent, deleteStudent } from '../services/api';
 import { Student, Plan } from '../types';
 import { PAYMENT_METHODS } from '../constants';
-import { Search, UserX, UserCheck, Clock, Calendar, List, LayoutGrid, Users as UsersIcon, RefreshCcw, X, Check, CheckCircle, CreditCard, AlertTriangle, Phone, User, Info, DollarSign } from 'lucide-react';
+import { Search, UserX, UserCheck, Clock, Calendar, List, LayoutGrid, Users as UsersIcon, RefreshCcw, X, Check, CheckCircle, CreditCard, AlertTriangle, Phone, User, Info, DollarSign, Trash2 } from 'lucide-react';
 
 const Students: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -16,11 +16,16 @@ const Students: React.FC = () => {
   const [selectedStudentForRenewal, setSelectedStudentForRenewal] = useState<Student | null>(null);
   const [renewalDate, setRenewalDate] = useState(new Date().toISOString().split('T')[0]);
   const [renewalPaymentMethod, setRenewalPaymentMethod] = useState(PAYMENT_METHODS[0]);
+  const [renewalPlanId, setRenewalPlanId] = useState('');
   const [loadingRenewal, setLoadingRenewal] = useState(false);
 
   // Status Toggle Modal State
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [studentToToggle, setStudentToToggle] = useState<Student | null>(null);
+
+  // Delete Modal State
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
 
   // View Details Modal State
   const [viewStudent, setViewStudent] = useState<Student | null>(null);
@@ -68,10 +73,34 @@ const Students: React.FC = () => {
     }
   };
 
+  const openDeleteModal = (student: Student) => {
+    setStudentToDelete(student);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!studentToDelete) return;
+
+    try {
+      await deleteStudent(studentToDelete.id);
+      setDeleteModalOpen(false);
+      setStudentToDelete(null);
+      // If viewing details of this student, close the view
+      if (viewStudent && viewStudent.id === studentToDelete.id) {
+        setViewStudent(null);
+      }
+      loadData();
+    } catch (error) {
+      alert('Erro ao excluir aluno.');
+      console.error(error);
+    }
+  };
+
   const openRenewalModal = (student: Student) => {
     setSelectedStudentForRenewal(student);
     setRenewalDate(new Date().toISOString().split('T')[0]);
     setRenewalPaymentMethod(PAYMENT_METHODS[0]);
+    setRenewalPlanId(student.planId);
     setRenewalModalOpen(true);
   };
 
@@ -81,10 +110,10 @@ const Students: React.FC = () => {
 
     setLoadingRenewal(true);
     try {
-      await renewStudent(selectedStudentForRenewal.id, renewalDate, renewalPaymentMethod);
+      await renewStudent(selectedStudentForRenewal.id, renewalDate, renewalPaymentMethod, renewalPlanId);
 
       // Calculate details for success modal
-      const plan = plans.find(p => p.id === selectedStudentForRenewal.planId);
+      const plan = plans.find(p => p.id === renewalPlanId);
       const duration = plan ? plan.durationDays : 30;
       const planValue = plan ? plan.value : 0;
 
@@ -279,6 +308,13 @@ const Students: React.FC = () => {
                             >
                               {student.status === 'Active' ? <UserX size={18} /> : <UserCheck size={18} />}
                             </button>
+                            <button
+                              onClick={() => openDeleteModal(student)}
+                              className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                              title="Excluir Aluno"
+                            >
+                              <Trash2 size={18} />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -346,6 +382,16 @@ const Students: React.FC = () => {
                           >
                             <UserX size={14} />
                           </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openDeleteModal(s);
+                            }}
+                            className="text-gray-400 hover:text-red-500 p-1"
+                            title="Excluir"
+                          >
+                            <Trash2 size={14} />
+                          </button>
                         </div>
                       </div>
                     ))
@@ -374,8 +420,24 @@ const Students: React.FC = () => {
             <form onSubmit={handleConfirmRenewal} className="p-6 space-y-4">
               <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-4">
                 <p>Aluno: <strong>{selectedStudentForRenewal.name}</strong></p>
-                <p>Plano Atual: <strong>{getPlanName(selectedStudentForRenewal.planId)}</strong></p>
-                <p>Valor: <strong>R$ {getPlanValue(selectedStudentForRenewal.planId).toFixed(2)}</strong></p>
+                <div className="mt-2">
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-blue-700/70 mb-1">Alterar Plano (Opcional)</label>
+                  <select
+                    value={renewalPlanId || selectedStudentForRenewal.planId}
+                    onChange={e => setRenewalPlanId(e.target.value)}
+                    className="w-full p-2 rounded bg-white border border-blue-200 text-blue-900 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  >
+                    {plans.map(plan => (
+                      <option key={plan.id} value={plan.id}>
+                        {plan.name} - R$ {plan.value.toFixed(2)} - {plan.durationDays} dias
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mt-2 flex justify-between items-center bg-blue-100/50 p-2 rounded">
+                  <span>Valor da Renovação:</span>
+                  <strong className="text-lg">R$ {getPlanValue(renewalPlanId || selectedStudentForRenewal.planId).toFixed(2)}</strong>
+                </div>
               </div>
 
               <div>
@@ -513,6 +575,40 @@ const Students: React.FC = () => {
                     }`}
                 >
                   {studentToToggle.status === 'Active' ? 'Sim, Desativar' : 'Sim, Ativar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && studentToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 text-center">
+              <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
+                <Trash2 className="h-8 w-8 text-red-600" />
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Excluir Aluno?</h3>
+
+              <p className="text-gray-500 text-sm mb-6">
+                Tem certeza que deseja excluir <strong>{studentToDelete.name}</strong>? Esta ação não pode ser desfeita.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteModalOpen(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors shadow-md shadow-red-200"
+                >
+                  Sim, Excluir
                 </button>
               </div>
             </div>

@@ -145,8 +145,8 @@ export const saveStudent = async (studentData: Omit<Student, 'id' | 'enrollmentD
     });
 };
 
-export const renewStudent = async (studentId: string, paymentDate: string, paymentMethod: string): Promise<void> => {
-    // Get student and their plan
+export const renewStudent = async (studentId: string, paymentDate: string, paymentMethod: string, newPlanId?: string): Promise<void> => {
+    // Get student
     const { data: student, error: fetchError } = await supabase
         .from('students')
         .select('*')
@@ -155,13 +155,16 @@ export const renewStudent = async (studentId: string, paymentDate: string, payme
 
     if (fetchError) throw fetchError;
 
+    // Determine which plan to use (new one or current one)
+    const planIdToUse = newPlanId || student.plan_id;
+
     const { data: plan, error: planError } = await supabase
         .from('plans')
         .select('*')
-        .eq('id', student.plan_id)
+        .eq('id', planIdToUse)
         .single();
 
-    if (planError) throw new Error("Plano do aluno não encontrado");
+    if (planError) throw new Error("Plano não encontrado");
 
     // Calculate new due date
     const payDateObj = new Date(paymentDate);
@@ -169,12 +172,19 @@ export const renewStudent = async (studentId: string, paymentDate: string, payme
     newDueDateObj.setDate(newDueDateObj.getDate() + plan.duration_days);
 
     // Update Student
+    const updateData: any = {
+        status: 'Active',
+        next_due_date: newDueDateObj.toISOString().split('T')[0]
+    };
+
+    // Only update plan_id if it changed
+    if (newPlanId && newPlanId !== student.plan_id) {
+        updateData.plan_id = newPlanId;
+    }
+
     const { error: updateError } = await supabase
         .from('students')
-        .update({
-            status: 'Active',
-            next_due_date: newDueDateObj.toISOString().split('T')[0]
-        })
+        .update(updateData)
         .eq('id', studentId);
 
     if (updateError) throw updateError;
@@ -198,6 +208,14 @@ export const toggleStudentStatus = async (studentId: string, newStatus: StudentS
         .update({ status: newStatus })
         .eq('id', studentId);
 
+    if (error) throw error;
+};
+
+export const deleteStudent = async (id: string): Promise<void> => {
+    const { error } = await supabase
+        .from('students')
+        .delete()
+        .eq('id', id);
     if (error) throw error;
 };
 
