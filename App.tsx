@@ -6,7 +6,7 @@ import Finance from './components/Finance';
 import Plans from './components/Plans';
 import Students from './components/Students';
 import Login from './components/Login';
-import { ViewState } from './types';
+import { ViewState, Student } from './types';
 import { supabase } from './services/supabase';
 import { logout } from './services/api';
 
@@ -14,6 +14,7 @@ function App() {
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [studentToEdit, setStudentToEdit] = useState<Student | null>(null);
 
   useEffect(() => {
     // Check initial session
@@ -50,13 +51,28 @@ function App() {
       case 'dashboard':
         return <Dashboard />;
       case 'new-student':
-        return <StudentForm onSuccess={() => setCurrentView('dashboard')} />;
+        return (
+          <StudentForm
+            onSuccess={() => {
+              setCurrentView('dashboard');
+              setStudentToEdit(null);
+            }}
+            initialData={studentToEdit}
+          />
+        );
       case 'finance':
         return <Finance />;
       case 'plans':
         return <Plans />;
       case 'students':
-        return <Students />;
+        return (
+          <Students
+            onEditStudent={(student) => {
+              setStudentToEdit(student);
+              setCurrentView('new-student');
+            }}
+          />
+        );
       default:
         return <Dashboard />;
     }

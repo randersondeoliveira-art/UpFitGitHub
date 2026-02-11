@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { getStudents, getPlans, toggleStudentStatus, renewStudent, deleteStudent } from '../services/api';
 import { Student, Plan } from '../types';
 import { PAYMENT_METHODS } from '../constants';
-import { Search, UserX, UserCheck, Clock, Calendar, List, LayoutGrid, Users as UsersIcon, RefreshCcw, X, Check, CheckCircle, CreditCard, AlertTriangle, Phone, User, Info, DollarSign, Trash2 } from 'lucide-react';
+import { Search, UserX, UserCheck, Clock, Calendar, List, LayoutGrid, Users as UsersIcon, RefreshCcw, X, Check, CheckCircle, CreditCard, AlertTriangle, Phone, User, Info, DollarSign, Trash2, Edit } from 'lucide-react';
 
-const Students: React.FC = () => {
+interface StudentsProps {
+  onEditStudent?: (student: Student) => void;
+}
+
+const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
   const [students, setStudents] = useState<Student[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [filterStatus, setFilterStatus] = useState<'All' | 'Active' | 'Inactive'>('All');
@@ -292,6 +296,13 @@ const Students: React.FC = () => {
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">
                             <button
+                              onClick={() => onEditStudent && onEditStudent(student)}
+                              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                              title="Editar Aluno"
+                            >
+                              <Edit size={18} />
+                            </button>
+                            <button
                               onClick={() => openRenewalModal(student)}
                               className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
                               title="Renovar Matrícula"
@@ -362,6 +373,16 @@ const Students: React.FC = () => {
                           </span>
                         </div>
                         <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEditStudent && onEditStudent(s);
+                            }}
+                            className="text-gray-400 hover:text-blue-500 p-1"
+                            title="Editar"
+                          >
+                            <Edit size={14} />
+                          </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

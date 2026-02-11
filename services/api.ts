@@ -219,6 +219,19 @@ export const deleteStudent = async (id: string): Promise<void> => {
     if (error) throw error;
 };
 
+export const updateStudent = async (student: Partial<Student> & { id: string }): Promise<void> => {
+    const { error } = await supabase
+        .from('students')
+        .update({
+            name: student.name,
+            whatsapp: student.whatsapp,
+            training_time: student.trainingTime
+        })
+        .eq('id', student.id);
+
+    if (error) throw error;
+};
+
 // --- FINANCE ---
 export const getTransactions = async (): Promise<Transaction[]> => {
     const { data, error } = await supabase
