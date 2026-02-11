@@ -10,11 +10,32 @@ import { ViewState, Student } from './types';
 import { supabase } from './services/supabase';
 import { logout } from './services/api';
 
-function App() {
+const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [studentToEdit, setStudentToEdit] = useState<Student | null>(null);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
+
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+  };
 
   useEffect(() => {
     // Check initial session
@@ -87,7 +108,13 @@ function App() {
   }
 
   return (
-    <Layout currentView={currentView} onNavigate={setCurrentView} onLogout={handleLogout}>
+    <Layout
+      currentView={currentView}
+      onNavigate={setCurrentView}
+      onLogout={handleLogout}
+      darkMode={darkMode}
+      toggleTheme={toggleTheme}
+    >
       {renderView()}
     </Layout>
   );

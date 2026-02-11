@@ -98,15 +98,15 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
   return (
     <div className="max-w-2xl mx-auto">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">{initialData ? 'Editar Aluno' : 'Novo Aluno'}</h1>
-        <p className="text-gray-500 text-sm">{initialData ? 'Atualize os dados cadastrais' : 'Cadastre um aluno e gere a cobrança automaticamente'}</p>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{initialData ? 'Editar Aluno' : 'Novo Aluno'}</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">{initialData ? 'Atualize os dados cadastrais' : 'Cadastre um aluno e gere a cobrança automaticamente'}</p>
       </header>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome Completo</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-gray-400" />
@@ -116,14 +116,14 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white"
                 placeholder="Ex: João da Silva"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">WhatsApp (apenas números)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp (apenas números)</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Phone className="h-5 w-5 text-gray-400" />
@@ -133,7 +133,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
                 required
                 value={whatsapp}
                 onChange={e => setWhatsapp(e.target.value.replace(/\D/g, ''))}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white"
                 placeholder="Ex: 11999999999"
               />
             </div>
@@ -141,7 +141,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Horário de Treino</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Horário de Treino</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Clock className="h-5 w-5 text-gray-400" />
@@ -149,7 +149,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
                 <select
                   value={trainingTime}
                   onChange={e => setTrainingTime(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white transition-all"
+                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white dark:bg-gray-700 dark:text-white transition-all"
                 >
                   {timeSlots.map(time => (
                     <option key={time} value={time}>
@@ -168,7 +168,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
 
             {!initialData && (
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Plano</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Plano</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <CreditCard className="h-5 w-5 text-gray-400" />
@@ -177,7 +177,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
                     value={planId}
                     onChange={e => setPlanId(e.target.value)}
                     disabled={plans.length === 0}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white transition-all disabled:bg-gray-100 disabled:text-gray-400"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white dark:bg-gray-700 dark:text-white transition-all disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400"
                   >
                     {plans.length === 0 ? (
                       <option value="">Nenhum plano cadastrado</option>
@@ -206,7 +206,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
           {!initialData && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Data do Pagamento</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Data do Pagamento</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Calendar className="h-5 w-5 text-gray-400" />
@@ -216,13 +216,13 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
                     required
                     value={paymentDate}
                     onChange={e => setPaymentDate(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Forma de Pagamento</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Forma de Pagamento</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Wallet className="h-5 w-5 text-gray-400" />
@@ -230,7 +230,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
                   <select
                     value={paymentMethod}
                     onChange={e => setPaymentMethod(e.target.value)}
-                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white transition-all"
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-white dark:bg-gray-700 dark:text-white transition-all"
                   >
                     {PAYMENT_METHODS.map(method => (
                       <option key={method} value={method}>
@@ -247,7 +247,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onSuccess, initialData }) => 
           )}
 
           {selectedPlan && !initialData && (
-            <p className="text-xs text-blue-600 bg-blue-50 p-2 rounded-lg mt-2 flex items-center">
+            <p className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-lg mt-2 flex items-center">
               <Check className="w-3 h-3 mr-1" />
               Este plano gerará uma receita de <strong>R$ {selectedPlan.value.toFixed(2)}</strong> na data <strong>{new Date(paymentDate + 'T12:00:00').toLocaleDateString('pt-BR')}</strong> via <strong>{paymentMethod}</strong>.
             </p>

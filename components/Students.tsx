@@ -175,22 +175,22 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
     <div className="space-y-6 relative">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Meus Alunos</h1>
-          <p className="text-gray-500 text-sm">Gerencie matriculas e frequências</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Meus Alunos</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">Gerencie matriculas e frequências</p>
         </div>
 
         {/* View Switcher */}
-        <div className="bg-gray-100 p-1 rounded-lg flex">
+        <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg flex">
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-md transition-all flex items-center space-x-2 text-sm font-medium ${viewMode === 'list' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`p-2 rounded-md transition-all flex items-center space-x-2 text-sm font-medium ${viewMode === 'list' ? 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
           >
             <List size={18} />
             <span>Lista</span>
           </button>
           <button
             onClick={() => setViewMode('byTime')}
-            className={`p-2 rounded-md transition-all flex items-center space-x-2 text-sm font-medium ${viewMode === 'byTime' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`p-2 rounded-md transition-all flex items-center space-x-2 text-sm font-medium ${viewMode === 'byTime' ? 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
           >
             <LayoutGrid size={18} />
             <span>Por Horário</span>
@@ -201,15 +201,15 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
       {viewMode === 'list' ? (
         <>
           {/* Filters for List Mode */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center">
-            <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg w-full md:w-auto">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div className="flex space-x-2 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg w-full md:w-auto">
               {(['All', 'Active', 'Inactive'] as const).map(status => (
                 <button
                   key={status}
                   onClick={() => setFilterStatus(status)}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all flex-1 md:flex-none ${filterStatus === status
-                    ? 'bg-white text-gray-800 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-white shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                     }`}
                 >
                   {status === 'All' ? 'Todos' : status === 'Active' ? 'Ativos' : 'Inativos'}
@@ -226,16 +226,16 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                 placeholder="Buscar aluno..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-9 pr-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white bg-gray-50"
               />
             </div>
           </div>
 
           {/* List Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-500 uppercase bg-gray-50">
+                <thead className="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-900">
                   <tr>
                     <th className="px-6 py-3">Aluno</th>
                     <th className="px-6 py-3">Plano</th>
@@ -245,7 +245,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                     <th className="px-6 py-3 text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {filteredStudents.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
@@ -254,14 +254,14 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                     </tr>
                   ) : (
                     filteredStudents.map(student => (
-                      <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={student.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <td className="px-6 py-4">
                           <button
                             onClick={() => openStudentDetails(student)}
                             className="text-left group"
                           >
-                            <div className="font-medium text-blue-600 group-hover:text-blue-800 group-hover:underline transition-colors">{student.name}</div>
-                            <div className="text-xs text-gray-500">{student.whatsapp}</div>
+                            <div className="font-medium text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 group-hover:underline transition-colors">{student.name}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{student.whatsapp}</div>
                           </button>
                         </td>
                         <td className="px-6 py-4">
@@ -270,13 +270,13 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center text-gray-600">
+                          <div className="flex items-center text-gray-600 dark:text-gray-300">
                             <Clock size={14} className="mr-1.5" />
                             {student.trainingTime || '-'}
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center text-gray-600">
+                          <div className="flex items-center text-gray-600 dark:text-gray-300">
                             <Calendar size={14} className="mr-1.5" />
                             {formatDate(student.nextDueDate)}
                           </div>
@@ -344,13 +344,13 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
             const count = studentsAtTime.length;
 
             return (
-              <div key={time} className={`rounded-xl border p-4 transition-colors ${count > 0 ? 'bg-white border-gray-200' : 'bg-gray-50 border-gray-100 opacity-60'}`}>
+              <div key={time} className={`rounded-xl border p-4 transition-colors ${count > 0 ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700' : 'bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 opacity-60'}`}>
                 <div className="flex justify-between items-center mb-3">
-                  <div className="flex items-center space-x-2 text-gray-800">
-                    <Clock size={18} className="text-blue-600" />
+                  <div className="flex items-center space-x-2 text-gray-800 dark:text-white">
+                    <Clock size={18} className="text-blue-600 dark:text-blue-400" />
                     <span className="font-bold text-lg">{time}</span>
                   </div>
-                  <span className={`px-2 py-1 rounded-md text-xs font-bold ${count > 0 ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-500'}`}>
+                  <span className={`px-2 py-1 rounded-md text-xs font-bold ${count > 0 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}`}>
                     {count} Aluno{count !== 1 && 's'}
                   </span>
                 </div>
@@ -360,14 +360,14 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                     <p className="text-xs text-gray-400 italic">Horário vago</p>
                   ) : (
                     studentsAtTime.map(s => (
-                      <div key={s.id} className="group flex items-center justify-between text-sm text-gray-700 p-1.5 hover:bg-gray-50 rounded-lg border border-transparent hover:border-gray-200 transition-all">
+                      <div key={s.id} className="group flex items-center justify-between text-sm text-gray-700 dark:text-gray-300 p-1.5 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg border border-transparent hover:border-gray-200 dark:hover:border-gray-600 transition-all">
                         <div className="flex items-center space-x-2 overflow-hidden">
-                          <div className="bg-gray-200 p-1 rounded-full shrink-0">
-                            <UsersIcon size={12} className="text-gray-500" />
+                          <div className="bg-gray-200 dark:bg-gray-600 p-1 rounded-full shrink-0">
+                            <UsersIcon size={12} className="text-gray-500 dark:text-gray-300" />
                           </div>
                           <span
                             onClick={() => openStudentDetails(s)}
-                            className="truncate cursor-pointer hover:text-blue-600 hover:underline"
+                            className="truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
                           >
                             {s.name}
                           </span>
@@ -427,10 +427,10 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
       {/* Renewal Input Modal */}
       {renewalModalOpen && selectedStudentForRenewal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50">
-              <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                <RefreshCcw size={18} className="text-blue-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+              <h3 className="font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+                <RefreshCcw size={18} className="text-blue-600 dark:text-blue-400" />
                 Renovar Matrícula
               </h3>
               <button onClick={() => setRenewalModalOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -439,14 +439,14 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
             </div>
 
             <form onSubmit={handleConfirmRenewal} className="p-6 space-y-4">
-              <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mb-4">
+              <div className="bg-blue-50 dark:bg-blue-900/30 p-3 rounded-lg text-sm text-blue-800 dark:text-blue-200 mb-4">
                 <p>Aluno: <strong>{selectedStudentForRenewal.name}</strong></p>
                 <div className="mt-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-blue-700/70 mb-1">Alterar Plano (Opcional)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-blue-700/70 dark:text-blue-300/70 mb-1">Alterar Plano (Opcional)</label>
                   <select
                     value={renewalPlanId || selectedStudentForRenewal.planId}
                     onChange={e => setRenewalPlanId(e.target.value)}
-                    className="w-full p-2 rounded bg-white border border-blue-200 text-blue-900 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    className="w-full p-2 rounded bg-white dark:bg-gray-700 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   >
                     {plans.map(plan => (
                       <option key={plan.id} value={plan.id}>
@@ -462,7 +462,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Data do Pagamento</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data do Pagamento</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Calendar className="h-5 w-5 text-gray-400" />
@@ -472,7 +472,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                     required
                     value={renewalDate}
                     onChange={e => setRenewalDate(e.target.value)}
-                    className="w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
@@ -481,7 +481,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Forma de Pagamento</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <CreditCard className="h-5 w-5 text-gray-400" />
@@ -489,7 +489,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                   <select
                     value={renewalPaymentMethod}
                     onChange={e => setRenewalPaymentMethod(e.target.value)}
-                    className="w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none"
+                    className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white appearance-none"
                   >
                     {PAYMENT_METHODS.map(method => (
                       <option key={method} value={method}>
@@ -504,7 +504,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                 <button
                   type="button"
                   onClick={() => setRenewalModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   Cancelar
                 </button>
@@ -521,21 +521,20 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
         </div>
       )}
 
-      {/* Success Modal */}
       {successDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full text-center animate-in zoom-in-95 duration-200">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6 animate-in zoom-in spin-in-12 duration-500">
-              <CheckCircle className="h-10 w-10 text-green-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8 max-w-sm w-full text-center animate-in zoom-in-95 duration-200">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-6 animate-in zoom-in spin-in-12 duration-500">
+              <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-500" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Renovação Concluída!</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Renovação Concluída!</h3>
 
             <div className="space-y-4 mb-6">
-              <p className="text-gray-500">
-                A matrícula de <strong className="text-gray-800">{successDetails.name}</strong> foi renovada com sucesso.
+              <p className="text-gray-500 dark:text-gray-400">
+                A matrícula de <strong className="text-gray-800 dark:text-gray-200">{successDetails.name}</strong> foi renovada com sucesso.
               </p>
 
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 space-y-2 text-sm text-left">
+              <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-100 dark:border-gray-700 space-y-2 text-sm text-left">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-500">Novo Vencimento:</span>
                   <span className="font-bold text-blue-600">{successDetails.newDate}</span>
@@ -560,17 +559,17 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
       {/* Status Toggle Confirmation Modal */}
       {statusModalOpen && studentToToggle && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 text-center">
-              <div className={`mx-auto flex items-center justify-center h-14 w-14 rounded-full mb-4 ${studentToToggle.status === 'Active' ? 'bg-red-100' : 'bg-green-100'}`}>
+              <div className={`mx-auto flex items-center justify-center h-14 w-14 rounded-full mb-4 ${studentToToggle.status === 'Active' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-green-100 dark:bg-green-900/30'}`}>
                 {studentToToggle.status === 'Active' ? (
-                  <UserX className="h-8 w-8 text-red-600" />
+                  <UserX className="h-8 w-8 text-red-600 dark:text-red-500" />
                 ) : (
-                  <UserCheck className="h-8 w-8 text-green-600" />
+                  <UserCheck className="h-8 w-8 text-green-600 dark:text-green-500" />
                 )}
               </div>
 
-              <h3 className="text-lg font-bold text-gray-900 mb-2">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                 {studentToToggle.status === 'Active' ? 'Desativar Aluno?' : 'Ativar Aluno?'}
               </h3>
 
@@ -584,7 +583,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setStatusModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   Cancelar
                 </button>
@@ -606,13 +605,13 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && studentToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 text-center">
-              <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 mb-4">
-                <Trash2 className="h-8 w-8 text-red-600" />
+              <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
+                <Trash2 className="h-8 w-8 text-red-600 dark:text-red-500" />
               </div>
 
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Excluir Aluno?</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Excluir Aluno?</h3>
 
               <p className="text-gray-500 text-sm mb-6">
                 Tem certeza que deseja excluir <strong>{studentToDelete.name}</strong>? Esta ação não pode ser desfeita.
@@ -621,7 +620,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   Cancelar
                 </button>
@@ -640,7 +639,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
       {/* Student Details Modal */}
       {viewStudent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 relative">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 relative">
 
             {/* Header */}
             <div className="bg-slate-900 p-6 text-white relative">
@@ -664,7 +663,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 bg-white dark:bg-gray-800">
 
               {/* Identity & Contact */}
               <div className="grid grid-cols-1 gap-4">
@@ -691,25 +690,25 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                 <div className="flex items-start gap-3">
                   <CreditCard className="w-5 h-5 text-gray-400 mt-0.5" />
                   <div>
-                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wide">Plano</p>
-                    <p className="text-gray-800 font-medium">{getPlanName(viewStudent.planId)}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wide">Plano</p>
+                    <p className="text-gray-800 dark:text-gray-200 font-medium">{getPlanName(viewStudent.planId)}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <DollarSign className="w-5 h-5 text-gray-400 mt-0.5" />
                   <div>
-                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wide">Valor</p>
-                    <p className="text-gray-800 font-medium">R$ {getPlanValue(viewStudent.planId).toFixed(2)}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wide">Valor</p>
+                    <p className="text-gray-800 dark:text-gray-200 font-medium">R$ {getPlanValue(viewStudent.planId).toFixed(2)}</p>
                   </div>
                 </div>
               </div>
 
               {/* Training Time */}
-              <div className="bg-gray-50 p-3 rounded-lg flex items-center gap-3 border border-gray-100">
+              <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg flex items-center gap-3 border border-gray-100 dark:border-gray-700">
                 <Clock className="w-5 h-5 text-blue-500" />
                 <div>
-                  <p className="text-xs text-gray-500 uppercase font-bold">Horário de Treino</p>
-                  <p className="text-lg font-bold text-gray-800">{viewStudent.trainingTime || 'Não definido'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold">Horário de Treino</p>
+                  <p className="text-lg font-bold text-gray-800 dark:text-gray-200">{viewStudent.trainingTime || 'Não definido'}</p>
                 </div>
               </div>
 
@@ -720,17 +719,17 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Info size={16} className="text-gray-400" />
-                    <span className="text-gray-600 text-sm">Data de Matrícula</span>
+                    <span className="text-gray-600 dark:text-gray-300 text-sm">Data de Matrícula</span>
                   </div>
-                  <span className="font-medium text-gray-800">{formatDate(viewStudent.enrollmentDate)}</span>
+                  <span className="font-medium text-gray-800 dark:text-gray-200">{formatDate(viewStudent.enrollmentDate)}</span>
                 </div>
 
-                <div className="flex items-center justify-between bg-amber-50 p-3 rounded-lg border border-amber-100">
-                  <div className="flex items-center gap-2 text-amber-700">
+                <div className="flex items-center justify-between bg-amber-50 dark:bg-amber-900/30 p-3 rounded-lg border border-amber-100 dark:border-amber-800">
+                  <div className="flex items-center gap-2 text-amber-700 dark:text-amber-500">
                     <Calendar size={18} />
                     <span className="text-sm font-bold">Próximo Vencimento</span>
                   </div>
-                  <span className="font-bold text-amber-800">{formatDate(viewStudent.nextDueDate)}</span>
+                  <span className="font-bold text-amber-800 dark:text-amber-400">{formatDate(viewStudent.nextDueDate)}</span>
                 </div>
               </div>
 
@@ -738,7 +737,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
               <div className="pt-2">
                 <button
                   onClick={() => setViewStudent(null)}
-                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+                  className="w-full py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg transition-colors"
                 >
                   Fechar
                 </button>

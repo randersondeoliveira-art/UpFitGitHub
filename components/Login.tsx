@@ -45,24 +45,22 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
 
         {/* Header */}
-        <div className={`${isSignUp ? 'bg-purple-600' : 'bg-blue-600'} p-8 text-center relative overflow-hidden transition-colors duration-500`}>
-          <div className={`absolute top-0 left-0 w-full h-full ${isSignUp ? 'bg-purple-500' : 'bg-blue-500'} opacity-20 transform -skew-y-12 scale-150 origin-top-left transition-colors duration-500`}></div>
+        <div className={`bg-slate-900 dark:bg-black p-8 text-center relative overflow-hidden transition-colors duration-500`}>
           <div className="relative z-10 flex flex-col items-center">
-            <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm mb-4">
-              <Dumbbell className="w-10 h-10 text-white" />
+            <div className="mb-4 bg-white/10 p-4 rounded-xl backdrop-blur-sm">
+              <img src="/UP LOGO.png" alt="UP Fit Logo" className="h-12 object-contain" />
             </div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">GymManager Pro</h1>
-            <p className={`${isSignUp ? 'text-purple-100' : 'text-blue-100'} mt-2 text-sm transition-colors duration-500`}>
-              {isSignUp ? 'Crie sua conta para começar' : 'Gerencie sua academia com inteligência'}
-            </p>
           </div>
+          <p className="text-gray-300 mt-2 text-sm font-light">
+            {isSignUp ? 'Crie sua conta para começar' : 'Gerencie sua academia com inteligência'}
+          </p>
         </div>
 
         {/* Form */}
-        <div className="p-8">
+        <div className="p-8 bg-white dark:bg-gray-800 transition-colors">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
@@ -71,7 +69,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 ${isSignUp ? 'focus:ring-purple-500' : 'focus:ring-blue-500'} transition-all`}
+                  className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-upfit-orange dark:bg-gray-700 dark:text-white transition-all"
                   placeholder="seu@email.com"
                   required
                 />
@@ -79,7 +77,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
@@ -88,19 +86,19 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 ${isSignUp ? 'focus:ring-purple-500' : 'focus:ring-blue-500'} transition-all`}
+                  className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-upfit-orange dark:bg-gray-700 dark:text-white transition-all"
                   placeholder="••••••••"
                   required
                   minLength={6}
                 />
               </div>
-              {isSignUp && <p className="text-xs text-gray-500 mt-1">Mínimo de 6 caracteres</p>}
+              {isSignUp && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Mínimo de 6 caracteres</p>}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className={`w-full ${isSignUp ? 'bg-purple-900 hover:bg-purple-800' : 'bg-slate-900 hover:bg-slate-800'} text-white p-3 rounded-lg font-bold transition-all transform flex items-center justify-center space-x-2 ${loading ? 'opacity-80 cursor-wait' : 'hover:scale-[1.02]'}`}
+              className={`w-full bg-upfit-orange hover:bg-orange-600 text-white p-3 rounded-lg font-bold transition-all transform flex items-center justify-center space-x-2 ${loading ? 'opacity-80 cursor-wait' : 'hover:scale-[1.02]'}`}
             >
               {loading ? (
                 <span>Processando...</span>
@@ -120,7 +118,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   setEmail('');
                   setPassword('');
                 }}
-                className={`text-sm font-medium ${isSignUp ? 'text-purple-600 hover:text-purple-800' : 'text-blue-600 hover:text-blue-800'} transition-colors flex items-center justify-center mx-auto space-x-1 outline-none`}
+                className="text-sm font-medium text-upfit-orange hover:text-orange-600 transition-colors flex items-center justify-center mx-auto space-x-1 outline-none"
               >
                 {isSignUp ? (
                   <>

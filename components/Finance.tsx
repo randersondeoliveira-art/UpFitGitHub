@@ -142,8 +142,8 @@ const Finance: React.FC = () => {
     <div className="space-y-6 relative">
       <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Financeiro</h1>
-          <p className="text-gray-500 text-sm">Gerencie receitas e despesas</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Financeiro</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">Gerencie receitas e despesas</p>
         </div>
 
         {activeTab === 'list' && (
@@ -177,48 +177,48 @@ const Finance: React.FC = () => {
       {activeTab === 'list' && (
         <>
           {/* Filters & Summary */}
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-4">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-4">
             <div className="flex items-center space-x-2 mb-4">
               <Filter className="text-gray-400 w-5 h-5" />
-              <span className="text-sm font-medium text-gray-700">Filtrar por Mês:</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por Mês:</span>
               <input
                 type="month"
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-green-50 p-4 rounded-lg border border-green-100 flex flex-col">
-                <span className="text-green-600 text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-100 dark:border-green-900/30 flex flex-col">
+                <span className="text-green-600 dark:text-green-400 text-xs font-bold uppercase tracking-wide flex items-center gap-1">
                   <TrendingUp size={14} /> Receitas
                 </span>
-                <span className="text-2xl font-bold text-green-700 mt-1">{formatCurrency(monthlyRevenue)}</span>
+                <span className="text-2xl font-bold text-green-700 dark:text-green-300 mt-1">{formatCurrency(monthlyRevenue)}</span>
               </div>
 
-              <div className="bg-red-50 p-4 rounded-lg border border-red-100 flex flex-col">
-                <span className="text-red-600 text-xs font-bold uppercase tracking-wide flex items-center gap-1">
+              <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-100 dark:border-red-900/30 flex flex-col">
+                <span className="text-red-600 dark:text-red-400 text-xs font-bold uppercase tracking-wide flex items-center gap-1">
                   <TrendingDown size={14} /> Despesas
                 </span>
-                <span className="text-2xl font-bold text-red-700 mt-1">{formatCurrency(monthlyExpense)}</span>
+                <span className="text-2xl font-bold text-red-700 dark:text-red-300 mt-1">{formatCurrency(monthlyExpense)}</span>
               </div>
 
-              <div className={`p-4 rounded-lg border flex flex-col ${monthlyBalance >= 0 ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100'}`}>
-                <span className={`${monthlyBalance >= 0 ? 'text-blue-600' : 'text-orange-600'} text-xs font-bold uppercase tracking-wide flex items-center gap-1`}>
+              <div className={`p-4 rounded-lg border flex flex-col ${monthlyBalance >= 0 ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-900/30' : 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-900/30'}`}>
+                <span className={`${monthlyBalance >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'} text-xs font-bold uppercase tracking-wide flex items-center gap-1`}>
                   <Wallet size={14} /> Saldo
                 </span>
-                <span className={`${monthlyBalance >= 0 ? 'text-blue-700' : 'text-orange-700'} text-2xl font-bold mt-1`}>
+                <span className={`${monthlyBalance >= 0 ? 'text-blue-700 dark:text-blue-300' : 'text-orange-700 dark:text-orange-300'} text-2xl font-bold mt-1`}>
                   {formatCurrency(monthlyBalance)}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-gray-500 uppercase bg-gray-50">
+                <thead className="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-900">
                   <tr>
                     <th className="px-6 py-3">Data</th>
                     <th className="px-6 py-3">Tipo</th>
@@ -228,7 +228,7 @@ const Finance: React.FC = () => {
                     <th className="px-6 py-3 text-center w-12">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {filteredTransactions.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
@@ -240,26 +240,26 @@ const Finance: React.FC = () => {
                     </tr>
                   ) : (
                     filteredTransactions.map(t => (
-                      <tr key={t.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{formatDate(t.date)}</td>
+                      <tr key={t.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200 whitespace-nowrap">{formatDate(t.date)}</td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${t.type === 'Receita' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${t.type === 'Receita' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                             }`}>
                             {t.type === 'Receita' ? <ArrowUpCircle size={12} /> : <ArrowDownCircle size={12} />}
                             <span>{t.type}</span>
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-gray-900">{t.category}</div>
+                          <div className="text-gray-900 dark:text-gray-200">{t.category}</div>
                           {t.paymentMethod && (
-                            <div className="text-xs text-gray-500 flex items-center mt-1">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                               <CreditCard size={10} className="mr-1" />
                               {t.paymentMethod}
                             </div>
                           )}
                         </td>
-                        <td className="px-6 py-4 text-gray-600 max-w-xs truncate">{t.description}</td>
-                        <td className={`px-6 py-4 text-right font-medium ${t.type === 'Receita' ? 'text-green-600' : 'text-red-600'}`}>
+                        <td className="px-6 py-4 text-gray-600 dark:text-gray-300 max-w-xs truncate">{t.description}</td>
+                        <td className={`px-6 py-4 text-right font-medium ${t.type === 'Receita' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                           {t.type === 'Despesa' ? '-' : '+'} {formatCurrency(t.value)}
                         </td>
                         <td className="px-6 py-4 text-center">
@@ -282,33 +282,33 @@ const Finance: React.FC = () => {
       )}
 
       {activeTab === 'new' && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-in slide-in-from-right duration-300">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 animate-in slide-in-from-right duration-300">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
               {transactionType === 'Receita' ? <ArrowUpCircle className="text-green-600" /> : <ArrowDownCircle className="text-red-600" />}
-              <h2 className="text-lg font-semibold text-gray-800">Lançar {transactionType}</h2>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Lançar {transactionType}</h2>
             </div>
-            <button onClick={() => setActiveTab('list')} className="text-sm text-blue-600 hover:underline">Cancelar</button>
+            <button onClick={() => setActiveTab('list')} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Cancelar</button>
           </div>
 
           <form onSubmit={handleSaveTransaction} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
-                <input type="date" required value={date} onChange={e => setDate(e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data</label>
+                <input type="date" required value={date} onChange={e => setDate(e.target.value)} className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoria</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Tag className="h-5 w-5 text-gray-400" />
                   </div>
                   {transactionType === 'Despesa' ? (
-                    <select value={category} onChange={e => setCategory(e.target.value)} className="w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none">
+                    <select value={category} onChange={e => setCategory(e.target.value)} className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white appearance-none">
                       {EXPENSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   ) : (
-                    <select value={category} onChange={e => setCategory(e.target.value)} className="w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none">
+                    <select value={category} onChange={e => setCategory(e.target.value)} className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white appearance-none">
                       {REVENUE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   )}
@@ -318,16 +318,16 @@ const Finance: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
-                <input type="number" required step="0.01" value={value} onChange={e => setValue(e.target.value)} placeholder="0,00" className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valor (R$)</label>
+                <input type="number" required step="0.01" value={value} onChange={e => setValue(e.target.value)} placeholder="0,00" className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Forma de Pagamento</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Forma de Pagamento</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <CreditCard className="h-5 w-5 text-gray-400" />
                   </div>
-                  <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full pl-10 p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none">
+                  <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white appearance-none">
                     {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
@@ -335,8 +335,8 @@ const Finance: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-              <input type="text" required value={description} onChange={e => setDescription(e.target.value)} placeholder={transactionType === 'Despesa' ? "Ex: Conta de Luz" : "Ex: Venda para João"} className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição</label>
+              <input type="text" required value={description} onChange={e => setDescription(e.target.value)} placeholder={transactionType === 'Despesa' ? "Ex: Conta de Luz" : "Ex: Venda para João"} className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white" />
             </div>
 
             <button
@@ -354,10 +354,10 @@ const Finance: React.FC = () => {
       {/* Export Modal */}
       {showExportModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50">
-              <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                <Download size={18} className="text-slate-700" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+              <h3 className="font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+                <Download size={18} className="text-slate-700 dark:text-slate-300" />
                 Exportar Relatório
               </h3>
               <button onClick={() => setShowExportModal(false)} className="text-gray-400 hover:text-gray-600">
@@ -366,16 +366,16 @@ const Finance: React.FC = () => {
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="flex bg-gray-100 p-1 rounded-lg">
+              <div className="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
                 <button
                   onClick={() => setExportType('month')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${exportType === 'month' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${exportType === 'month' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
                 >
                   Por Mês
                 </button>
                 <button
                   onClick={() => setExportType('range')}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${exportType === 'range' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}
+                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${exportType === 'range' ? 'bg-white dark:bg-gray-600 shadow-sm text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
                 >
                   Por Período
                 </button>
@@ -383,32 +383,32 @@ const Finance: React.FC = () => {
 
               {exportType === 'month' ? (
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Selecione o Mês</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Selecione o Mês</label>
                   <input
                     type="month"
                     value={exportMonth}
                     onChange={(e) => setExportMonth(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
               ) : (
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700">Data Inicial</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Data Inicial</label>
                     <input
                       type="date"
                       value={exportStartDate}
                       onChange={(e) => setExportStartDate(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="block text-sm font-medium text-gray-700">Data Final</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Data Final</label>
                     <input
                       type="date"
                       value={exportEndDate}
                       onChange={(e) => setExportEndDate(e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                     />
                   </div>
                 </div>

@@ -79,8 +79,8 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <header className="mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Visão Geral</h1>
-        <p className="text-gray-500 text-sm">Acompanhe o desempenho da sua academia</p>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Visão Geral</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">Acompanhe o desempenho da sua academia</p>
       </header>
 
       {/* KPI Cards */}
@@ -107,11 +107,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Radar de Cobrança */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/50">
           <div className="flex items-center space-x-2">
             <AlertTriangle className="text-red-500 w-5 h-5" />
-            <h2 className="font-semibold text-gray-800">Radar de Cobrança</h2>
+            <h2 className="font-semibold text-gray-800 dark:text-white">Radar de Cobrança</h2>
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-xs font-medium px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full flex items-center">
@@ -123,7 +123,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 dark:divide-gray-700">
           {data.dueStudents.length === 0 ? (
             <div className="p-8 text-center text-gray-400">
               <p>Tudo em dia! Nenhum vencimento próximo ou atrasado.</p>
@@ -133,11 +133,11 @@ const Dashboard: React.FC = () => {
               const statusDetails = getStatusDetails(student.nextDueDate);
 
               return (
-                <div key={student.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-gray-50 transition-colors gap-3 sm:gap-0">
+                <div key={student.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors gap-3 sm:gap-0">
                   <div className="flex items-start sm:items-center space-x-3">
                     <div className={`w-2 h-10 rounded-full ${statusDetails.color.includes('red') ? 'bg-red-500' : 'bg-amber-500'}`}></div>
                     <div>
-                      <p className="font-medium text-gray-900">{student.name}</p>
+                      <p className="font-medium text-gray-900 dark:text-gray-200">{student.name}</p>
                       <div className="flex items-center mt-1">
                         <span className={`text-xs font-bold px-2 py-0.5 rounded ${statusDetails.bg} ${statusDetails.color}`}>
                           {statusDetails.label}
@@ -169,16 +169,16 @@ const Dashboard: React.FC = () => {
 };
 
 const KpiCard = ({ title, value, icon, trend, positive }: { title: string, value: string, icon: React.ReactNode, trend: string, positive?: boolean }) => (
-  <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-32 relative overflow-hidden group">
+  <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between h-32 relative overflow-hidden group">
     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity scale-150 transform translate-x-2 -translate-y-2">
       {React.isValidElement(icon) && React.cloneElement(icon as React.ReactElement<any>, { size: 64 })}
     </div>
     <div className="flex justify-between items-start z-10">
       <div>
-        <p className="text-sm font-medium text-gray-500">{title}</p>
-        <h3 className={`text-2xl font-bold mt-1 ${positive === false ? 'text-red-600' : 'text-gray-900'}`}>{value}</h3>
+        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
+        <h3 className={`text-2xl font-bold mt-1 ${positive === false ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>{value}</h3>
       </div>
-      <div className="p-2 bg-gray-50 rounded-lg">
+      <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
         {React.isValidElement(icon) && React.cloneElement(icon as React.ReactElement<any>, { size: 20 })}
       </div>
     </div>
