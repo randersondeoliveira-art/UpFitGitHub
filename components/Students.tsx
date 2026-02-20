@@ -19,6 +19,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
   const [renewalModalOpen, setRenewalModalOpen] = useState(false);
   const [selectedStudentForRenewal, setSelectedStudentForRenewal] = useState<Student | null>(null);
   const [renewalDate, setRenewalDate] = useState(new Date().toISOString().split('T')[0]);
+  const [renewalCompetenceDate, setRenewalCompetenceDate] = useState('');
   const [renewalPaymentMethod, setRenewalPaymentMethod] = useState(PAYMENT_METHODS[0]);
   const [renewalPlanId, setRenewalPlanId] = useState('');
   const [loadingRenewal, setLoadingRenewal] = useState(false);
@@ -103,6 +104,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
   const openRenewalModal = (student: Student) => {
     setSelectedStudentForRenewal(student);
     setRenewalDate(new Date().toISOString().split('T')[0]);
+    setRenewalCompetenceDate(student.nextDueDate);
     setRenewalPaymentMethod(PAYMENT_METHODS[0]);
     setRenewalPlanId(student.planId);
     setRenewalModalOpen(true);
@@ -114,14 +116,14 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
 
     setLoadingRenewal(true);
     try {
-      await renewStudent(selectedStudentForRenewal.id, renewalDate, renewalPaymentMethod, renewalPlanId);
+      await renewStudent(selectedStudentForRenewal.id, renewalDate, renewalPaymentMethod, renewalPlanId, renewalCompetenceDate);
 
       // Calculate details for success modal
       const plan = plans.find(p => p.id === renewalPlanId);
       const duration = plan ? plan.durationDays : 30;
       const planValue = plan ? plan.value : 0;
 
-      const dateObj = new Date(renewalDate);
+      const dateObj = new Date(renewalCompetenceDate || renewalDate);
       dateObj.setDate(dateObj.getDate() + duration);
       const formattedDate = dateObj.toLocaleDateString('pt-BR');
 
@@ -145,6 +147,21 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
   const getPlanName = (planId: string) => plans.find(p => p.id === planId)?.name || 'N/A';
   const getPlanValue = (planId: string) => plans.find(p => p.id === planId)?.value || 0;
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
+
+  const generateReferenceOptions = (baseDate: string) => {
+    if (!baseDate) return [];
+    const options = [];
+    const base = new Date(baseDate);
+    // Include past 3 months to next 3 months
+    for (let i = -3; i <= 3; i++) {
+      const d = new Date(base);
+      d.setMonth(d.getMonth() + i);
+      const monthName = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+      const capitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+      options.push({ label: capitalized, value: d.toISOString().split('T')[0] });
+    }
+    return options;
+  };
 
   // Filter logic for List View
   const filteredStudents = students.filter(student => {
@@ -462,6 +479,26 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Referência (Mês/Ano)</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <select
+                    value={renewalCompetenceDate}
+                    onChange={e => setRenewalCompetenceDate(e.target.value)}
+                    className="w-full pl-10 p-3 border border-gray-300 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white appearance-none"
+                  >
+                    {selectedStudentForRenewal && generateReferenceOptions(selectedStudentForRenewal.nextDueDate).map(opt => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data do Pagamento</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -476,7 +513,7 @@ const Students: React.FC<StudentsProps> = ({ onEditStudent }) => {
                   />
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  O sistema calculará o próximo vencimento a partir desta data, adicionando a duração do plano. O status será atualizado para <strong>Ativo</strong>.
+                  O sistema calculará o próximo vencimento a partir da data de competência (Referência), adicionando a duração do plano. O status será atualizado para <strong>Ativo</strong>.
                 </p>
               </div>
 

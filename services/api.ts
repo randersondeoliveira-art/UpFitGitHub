@@ -141,11 +141,12 @@ export const saveStudent = async (studentData: Omit<Student, 'id' | 'enrollmentD
         value: selectedPlan.value,
         description,
         studentId: newStudent.id,
-        paymentMethod: studentData.paymentMethod
+        paymentMethod: studentData.paymentMethod,
+        competenceDate: enrollmentDate // For new students, competence date is enrollment date
     });
 };
 
-export const renewStudent = async (studentId: string, paymentDate: string, paymentMethod: string, newPlanId?: string): Promise<void> => {
+export const renewStudent = async (studentId: string, paymentDate: string, paymentMethod: string, newPlanId?: string, competenceDate?: string): Promise<void> => {
     // Get student
     const { data: student, error: fetchError } = await supabase
         .from('students')
@@ -166,8 +167,9 @@ export const renewStudent = async (studentId: string, paymentDate: string, payme
 
     if (planError) throw new Error("Plano não encontrado");
 
-    // Calculate new due date
-    const payDateObj = new Date(paymentDate);
+    // Calculate new due date based on competenceDate, falling back to paymentDate
+    const baseDate = competenceDate || paymentDate;
+    const payDateObj = new Date(baseDate);
     const newDueDateObj = new Date(payDateObj);
     newDueDateObj.setDate(newDueDateObj.getDate() + plan.duration_days);
 
@@ -198,7 +200,8 @@ export const renewStudent = async (studentId: string, paymentDate: string, payme
         value: plan.value,
         description,
         studentId: student.id,
-        paymentMethod: paymentMethod
+        paymentMethod: paymentMethod,
+        competenceDate: competenceDate || paymentDate
     });
 };
 
@@ -249,7 +252,8 @@ export const getTransactions = async (): Promise<Transaction[]> => {
         value: t.value,
         description: t.description,
         studentId: t.student_id,
-        paymentMethod: t.payment_method
+        paymentMethod: t.payment_method,
+        competenceDate: t.competence_date
     }));
 };
 
@@ -263,7 +267,8 @@ export const addTransaction = async (txData: Omit<Transaction, 'id'>): Promise<v
             value: txData.value,
             description: txData.description,
             student_id: txData.studentId,
-            payment_method: txData.paymentMethod
+            payment_method: txData.paymentMethod,
+            competence_date: txData.competenceDate
         }]);
 
     if (error) throw error;

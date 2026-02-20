@@ -30,6 +30,7 @@ export interface Transaction {
   description: string;
   studentId?: string; // Optional linkage
   paymentMethod?: string;
+  competenceDate?: string; // ISO Date (Referencia/Mes-Ano)
 }
 
 export interface KPI {
